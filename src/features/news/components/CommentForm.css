@@ -1,0 +1,38 @@
+.comment-form-container {
+    margin-bottom: var(--spacing-large);
+  }
+  
+  .comment-form {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-medium);
+  }
+  
+  .comment-input-group {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-small);
+    flex: 1;
+    background-color: var(--background-color);
+    border-radius: var(--border-radius-medium);
+    padding: var(--spacing-xxsmall) var(--spacing-small);
+  }
+  
+  .comment-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .comment-input {
+    flex: 1;
+    border: none;
+    background: none;
+    padding: var(--spacing-small);
+    font-size: var(--font-size-medium);
+  }
+  
+  .comment-input:focus {
+    outline: none;
+  }
