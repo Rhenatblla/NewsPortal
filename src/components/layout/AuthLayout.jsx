@@ -13,7 +13,6 @@ const AuthLayout = () => {
   return (
     <div className="auth-container">
       <div className="auth-logo">
-        <h1>Portal Berita</h1>
       </div>
       <div className="auth-content">
         <Outlet />

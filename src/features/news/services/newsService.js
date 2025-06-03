@@ -1,17 +1,18 @@
 // src/features/news/services/newsService.js
-import { db } from '../../../firebase/firebaseConfig';
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  query,
-  where,
-  orderBy,
+
+import { 
+  collection, 
+  doc, 
+  getDoc, 
+  getDocs, 
+  addDoc, 
+  updateDoc, 
+  deleteDoc, 
+  query, 
+  where, 
+  orderBy 
 } from 'firebase/firestore';
+import { db } from '../../../firebase/firebaseConfig';
 
 // Referensi koleksi news
 const newsCollection = collection(db, 'news');
@@ -31,7 +32,7 @@ export const fetchNewsById = async (id) => {
   return { id: docSnap.id, ...docSnap.data() };
 };
 
-// Search news by query on title or content
+// Search news by title or content
 export const searchNews = async (queryStr) => {
   if (!queryStr) return [];
 
@@ -64,7 +65,8 @@ export const addNews = async (newsData) => {
     createdAt: now,
     updatedAt: now,
     comments: [],
-    likes: 0,
+    likesCount: 0,
+    likedBy: [],
   };
   const docRef = await addDoc(newsCollection, newNews);
   const addedDoc = await getDoc(docRef);
@@ -89,7 +91,7 @@ export const deleteNews = async (id) => {
   return true;
 };
 
-// Add comment to news
+// Add comment to news (comments stored as array in news doc)
 export const addComment = async (newsId, comment) => {
   const docRef = doc(db, 'news', newsId);
   const newsDoc = await getDoc(docRef);
@@ -113,13 +115,73 @@ export const addComment = async (newsId, comment) => {
   return { id: updatedDoc.id, ...updatedDoc.data() };
 };
 
-// Update likes count (optional, if you want to store likes count in DB)
-export const updateLikes = async (id, likes) => {
-  const docRef = doc(db, 'news', id);
+// Toggle like on news
+export const toggleLike = async (newsId, userId) => {
+  const docRef = doc(db, 'news', newsId);
+  const newsDoc = await getDoc(docRef);
+  if (!newsDoc.exists()) throw new Error('News not found');
+
+  const newsData = newsDoc.data();
+  const likedBy = newsData.likedBy || [];
+  const hasLiked = likedBy.includes(userId);
+
+  let updatedLikedBy;
+  if (hasLiked) {
+    updatedLikedBy = likedBy.filter(id => id !== userId);
+  } else {
+    updatedLikedBy = [...likedBy, userId];
+  }
+
+  const updatedLikesCount = updatedLikedBy.length;
+
   await updateDoc(docRef, {
-    likes,
+    likedBy: updatedLikedBy,
+    likesCount: updatedLikesCount,
     updatedAt: new Date(),
   });
+
+  const updatedDoc = await getDoc(docRef);
+  return { id: updatedDoc.id, ...updatedDoc.data() };
+};
+
+// Update comment in comments array
+export const updateComment = async (newsId, commentId, newContent) => {
+  const docRef = doc(db, 'news', newsId);
+  const docSnap = await getDoc(docRef);
+  if (!docSnap.exists()) throw new Error('News not found');
+
+  const newsData = docSnap.data();
+  const comments = newsData.comments || [];
+
+  const updatedComments = comments.map(comment =>
+    comment.id === commentId ? { ...comment, content: newContent, updatedAt: new Date() } : comment
+  );
+
+  await updateDoc(docRef, {
+    comments: updatedComments,
+    updatedAt: new Date(),
+  });
+
+  const updatedDoc = await getDoc(docRef);
+  return { id: updatedDoc.id, ...updatedDoc.data() };
+};
+
+// Delete comment from comments array
+export const deleteComment = async (newsId, commentId) => {
+  const docRef = doc(db, 'news', newsId);
+  const docSnap = await getDoc(docRef);
+  if (!docSnap.exists()) throw new Error('News not found');
+
+  const newsData = docSnap.data();
+  const comments = newsData.comments || [];
+
+  const filteredComments = comments.filter(comment => comment.id !== commentId);
+
+  await updateDoc(docRef, {
+    comments: filteredComments,
+    updatedAt: new Date(),
+  });
+
   const updatedDoc = await getDoc(docRef);
   return { id: updatedDoc.id, ...updatedDoc.data() };
 };

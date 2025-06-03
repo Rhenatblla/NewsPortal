@@ -162,7 +162,7 @@ const AddNewsForm = () => {
         link: formData.link,
         image: formData.image,
         author: {
-          id: user.uid,             // GANTI DARI user.id ke user.uid
+          id: user.uid,
           name: user.name,
           profilePicture: user.profilePicture
         }
@@ -286,7 +286,28 @@ const AddNewsForm = () => {
           </label>
           <div className="image-upload-section">
             <div className="image-preview">
-              {formData.image && <img src={formData.image} alt="Cover Preview" />}
+              {formData.image && formData.image !== '/images/placeholders/news-default.jpg' ? (
+                <img src={formData.image} alt="Cover Preview" />
+              ) : (
+                <div className="upload-placeholder" aria-label="Upload Image Placeholder" role="img">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="48"
+                    height="48"
+                    fill="none"
+                    stroke="#888"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="feather feather-upload"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                  </svg>
+                  <p style={{color: '#888', marginTop: 8}}>Upload Image</p>
+                </div>
+              )}
             </div>
             <div className="upload-controls">
               <p className="upload-hint">Select an eye-catching image for your article</p>

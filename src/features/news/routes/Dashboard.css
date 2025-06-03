@@ -1,17 +1,12 @@
 .dashboard {
-    background-color: var(--card-background);
-    border-radius: var(--border-radius-medium);
-    box-shadow: var(--shadow-small);
-    padding: var(--spacing-large);
+    background-color: transparent;
+    border-radius: 0;
+    box-shadow:  none;;
+    padding: 0;
+    width: 100%;
+    margin: 0;
   }
-  
-  .dashboard-title {
-    margin-bottom: var(--spacing-large);
-    font-size: var(--font-size-xxlarge);
-  }
-  
   .news-list {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-large);
   }

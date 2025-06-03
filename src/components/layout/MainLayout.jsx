@@ -1,14 +1,12 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import Navbar from '../common/Navbar/Navbar';
-import Sidebar from '../common/Sidebar/Sidebar';
+import Navbar from '../common/Navbar/Navbar'; 
 
 const MainLayout = () => {
   return (
     <div className="app-container">
       <Navbar />
-      <div className="main-content">
-        <Sidebar />
+      <div className="main-content" style={{backgroundColor: 'white'}}>
         <div className="content">
           <Outlet />
         </div>

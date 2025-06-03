@@ -5,7 +5,7 @@ import './BookmarkPage.css';
 const BookmarkPage = () => {
   return (
     <div className="bookmark-page">
-      <h1 className="page-title">My Bookmarks</h1>
+      {/* <h1 className="page-title">My Bookmarks</h1> */}
       <BookmarkList />
     </div>
   );

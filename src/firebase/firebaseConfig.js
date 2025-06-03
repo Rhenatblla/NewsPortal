@@ -5,16 +5,14 @@ import { getAuth } from "firebase/auth";       // Tambahkan import Auth
 import { getFirestore } from "firebase/firestore"; // Tambahkan import Firestore
 
 const firebaseConfig = {
-
-  apiKey: "AIzaSyAm93kUyp3xlQqQaR7pv_bMJxQ59gd02CE",
-  authDomain: "troom-app-ac9dd.firebaseapp.com",
-  projectId: "troom-app-ac9dd",
-  storageBucket: "troom-app-ac9dd.firebasestorage.app",
-  messagingSenderId: "897310389452",
-  appId: "1:897310389452:web:51927aac8e9a9ff58d3e69",
-  measurementId: "G-F6V69773WY"
+  apiKey: "AIzaSyATmDXCPGQmNU3ckeSwgDsF1LACNDVxf_o",
+  authDomain: "news-portal-47272.firebaseapp.com",
+  projectId: "news-portal-47272",
+  storageBucket: "news-portal-47272.firebasestorage.app",
+  messagingSenderId: "423698188243",
+  appId: "1:423698188243:web:61b4654124f4c9e4949126",
+  measurementId: "G-B6F0TQPTX6"
 };
-
 
 // Initialize Firebase app
 const app = initializeApp(firebaseConfig);

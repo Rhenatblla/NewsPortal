@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../auth/hooks/useAuth';
 import { useNews } from '../hooks/useNews';
@@ -9,10 +9,18 @@ import defaultAvatar from '../../../assets/image/Profile.jpg';
 
 const NewsDetail = ({ news }) => {
   const { user } = useAuth();
-  const { deleteNews } = useNews();
+  const { deleteNews, updateComment, deleteComment } = useNews();
   const navigate = useNavigate();
 
   const isAuthor = user && news.author?.id === user.uid;
+
+  // State lokal untuk komentar agar bisa update inline
+  const [comments, setComments] = useState(news.comments || []);
+
+  // Sync jika news.comments dari props berubah
+  useEffect(() => {
+    setComments(news.comments || []);
+  }, [news.comments]);
 
   const formatDate = (dateValue) => {
     if (!dateValue) return '';
@@ -54,6 +62,35 @@ const NewsDetail = ({ news }) => {
     }
   };
 
+  // --- Fitur Delete komentar inline ---
+  const handleDeleteComment = async (commentId) => {
+    if (window.confirm('Are you sure you want to delete this comment?')) {
+      try {
+        await deleteComment(news.id, commentId);
+        setComments((prev) => prev.filter((c) => c.id !== commentId));
+      } catch (err) {
+        alert('Failed to delete comment: ' + (err.message || 'Unknown error'));
+      }
+    }
+  };
+
+  // --- Fitur Update komentar inline ---
+  const handleUpdateComment = async (commentId, newContent) => {
+    try {
+      await updateComment(news.id, commentId, newContent);
+      setComments((prev) =>
+        prev.map((c) => (c.id === commentId ? { ...c, content: newContent } : c))
+      );
+    } catch (err) {
+      alert('Failed to update comment: ' + (err.message || 'Unknown error'));
+    }
+  };
+
+  // --- Menambahkan komentar baru ke list ---
+  const handleCommentAdded = (newComment) => {
+    setComments((prev) => [...prev, newComment]);
+  };
+
   return (
     <div className="news-detail">
       <div className="news-header">
@@ -79,24 +116,25 @@ const NewsDetail = ({ news }) => {
       <div className="news-content">
         <p>{news.content}</p>
 
-        {news.link && (() => {
-          const link = parseMarkdownLink(news.link);
-          if (!link) return null;
-          return (
-            <p className="news-link">
-              <a href={link.url} target="_blank" rel="noopener noreferrer">
-                {link.text}
-              </a>
-            </p>
-          );
-        })()}
+        {news.link &&
+          (() => {
+            const link = parseMarkdownLink(news.link);
+            if (!link) return null;
+            return (
+              <p className="news-link">
+                <a href={link.url} target="_blank" rel="noopener noreferrer">
+                  {link.text}
+                </a>
+              </p>
+            );
+          })()}
       </div>
 
       <div className="news-actions">
         <div className="news-stats">
           <span className="news-comments">
             <i className="comment-icon"></i>
-            {news.comments?.length || 0} Comments
+            {comments.length} Comments
           </span>
 
           <span className="news-likes">
@@ -122,7 +160,7 @@ const NewsDetail = ({ news }) => {
         <h3 className="comments-title">Comments</h3>
 
         {user ? (
-          <CommentForm newsId={news.id} />
+          <CommentForm newsId={news.id} onCommentAdded={handleCommentAdded} />
         ) : (
           <div className="comments-login-prompt">
             <p>
@@ -132,7 +170,12 @@ const NewsDetail = ({ news }) => {
           </div>
         )}
 
-        <CommentList comments={news.comments} />
+        <CommentList
+          comments={comments}
+          currentUserId={user?.uid}
+          onDelete={handleDeleteComment}
+          onUpdate={handleUpdateComment}
+        />
       </div>
     </div>
   );

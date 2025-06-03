@@ -8,7 +8,7 @@ import {
   removeBookmark,
   isBookmarked
 } from '../../bookmark/services/bookmarkService';
-import { updateLikes } from '../services/newsService';
+import { toggleLike } from '../services/newsService';
 import './NewsListItem.css';
 import defaultAvatar from '../../../assets/image/Profile.jpg';
 
@@ -17,29 +17,25 @@ const NewsListItem = ({ news }) => {
 
   const [bookmarked, setBookmarked] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(news.likes || 0);
+  const [likeCount, setLikeCount] = useState(news.likesCount || 0);
 
   useEffect(() => {
-    const liked = localStorage.getItem(`like-${news.id}`);
-    const storedCount = localStorage.getItem(`like-count-${news.id}`);
-
-    setIsLiked(liked === 'true');
-    setLikeCount(storedCount ? parseInt(storedCount) : news.likes || 0);
-  }, [news.id, news.likes]);
+    if (user && news.likedBy) {
+      setIsLiked(news.likedBy.includes(user.uid));
+    } else {
+      setIsLiked(false);
+    }
+    setLikeCount(news.likesCount || 0);
+  }, [news.likedBy, news.likesCount, user]);
 
   const handleLikeClick = async (e) => {
     e.preventDefault();
     if (!user) return;
 
-    const newStatus = !isLiked;
-    const increment = newStatus ? 1 : -1;
-
     try {
-      const updatedNews = await updateLikes(news.id, increment);
-      setIsLiked(newStatus);
-      setLikeCount(updatedNews.likes);
-      localStorage.setItem(`like-${news.id}`, newStatus);
-      localStorage.setItem(`like-count-${news.id}`, updatedNews.likes);
+      const updatedNews = await toggleLike(news.id, user.uid);
+      setIsLiked(updatedNews.likedBy.includes(user.uid));
+      setLikeCount(updatedNews.likesCount);
     } catch (error) {
       console.error('Failed to update likes:', error);
     }

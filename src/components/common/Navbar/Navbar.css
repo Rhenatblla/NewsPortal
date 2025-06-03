@@ -1,62 +1,81 @@
+:root {
+  --navbar-height: 56px;
+  --spacing-small: 8px;
+  --spacing-medium: 16px;
+  --spacing-large: 24px;
+  --border-radius-small: 6px;
+  --card-background: #fff;
+  --text-color: #111;
+  --shadow-medium: rgba(0, 0, 0, 0.1);
+  --primary-color: #007acc;
+  --error-color: #d32f2f;
+}
+
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   height: var(--navbar-height);
-  background-color: var(--card-background);
-  box-shadow: var(--shadow-small);
+  background-color: #8dd1e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 var(--spacing-large);
   z-index: 100;
-  /* Menambahkan ini untuk memastikan Navbar selalu di atas konten lain */
   will-change: transform;
-  /* Menambahkan ini untuk memaksa hardware acceleration */
   transform: translateZ(0);
 }
-   
+
 .navbar-left {
   display: flex;
   align-items: center;
 }
-   
+
 .navbar-brand {
-  font-size: var(--font-size-large);
+  font-size: 1.25rem;
   font-weight: bold;
-  color: var(--primary-color);
+  color: #111;
+  text-decoration: none;
 }
-   
+a.navbar-brand{
+  text-decoration: none;
+}
+a.navbar-brand:hover{
+  color: #007acc;
+}
 .navbar-center {
   flex: 1;
   max-width: 600px;
   margin: 0 var(--spacing-large);
 }
-   
+
 .navbar-right {
   display: flex;
   align-items: center;
   gap: var(--spacing-medium);
 }
-   
+
 .auth-buttons {
   display: flex;
   gap: var(--spacing-small);
 }
-   
+
 .btn-login {
-  color: #3a0643;
+  color: #f7f7f7;
   font-weight: 500;
+  text-decoration: none;
 }
-   
+
 .btn-register {
   color: white;
-  background-color: #3a0643;
-  padding: var(--spacing-xxsmall) var(--spacing-small);
+  background-color: #2b6d9c;
+  padding: 6px 12px;
   border-radius: var(--border-radius-small);
+  text-decoration: none;
 }
-   
+
 .btn-add {
   display: flex;
   align-items: center;
@@ -64,72 +83,174 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background-color: var(--primary-color);
+  background-color: black;
   color: white;
-  font-size: var(--font-size-large);
+  font-size: 1.25rem;
+  text-decoration: none;
 }
-   
+
 .user-dropdown {
   position: relative;
 }
-   
+
 .dropdown-toggle {
   display: flex;
   align-items: center;
   gap: var(--spacing-small);
   background: none;
   border: none;
-  padding: var(--spacing-xsmall);
+  padding: 6px;
   cursor: pointer;
+  color: #111;
+  font-weight: 500;
 }
-   
+
 .user-avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
   object-fit: cover;
-  /* Menambahkan ini untuk mencegah shifting layout saat gambar dimuat */
   min-width: 32px;
   min-height: 32px;
 }
-   
+
 .user-name {
   font-weight: 500;
 }
-   
+
 .dropdown-menu {
   position: absolute;
   top: 100%;
   right: 0;
   background-color: var(--card-background);
-  border-radius: var(--border-radius-medium);
-  box-shadow: var(--shadow-medium);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px var(--shadow-medium);
   overflow: hidden;
   width: 200px;
   z-index: 10;
 }
-   
+
 .dropdown-item {
   display: block;
-  padding: var(--spacing-medium);
+  padding: 12px 16px;
   color: var(--text-color);
-  transition: background-color 0.2s;
-  border: none; /* Memastikan semua dropdown item tidak memiliki border */
-  background: none; /* Menyamakan background */
-  width: 100%; /* Memastikan lebar penuh */
-  text-align: left; /* Rata kiri teks */
-  cursor: pointer; /* Menunjukkan bahwa elemen bisa diklik */
+  text-decoration: none;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
 }
-   
+
 .dropdown-item:hover {
   background-color: rgba(74, 61, 61, 0.05);
   text-decoration: none;
 }
-   
+
 .dropdown-item.logout {
   color: var(--error-color);
-  width: 100%;
-  border: none; /* Memastikan tidak ada border */
-  outline: none; /* Menghilangkan outline saat fokus */
   text-align: center;
+  font-weight: 600;
+}
+
+.dropdown-item.logout:hover {
+  background-color: #fce4e4;
+}
+
+/* Hamburger button */
+.hamburger-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-right: 0.5rem;
+  display: flex;
+  align-items: center;
+  color: #111;
+  transition: color 0.2s ease;
+}
+
+.hamburger-btn:hover {
+  color: var(--primary-color);
+}
+
+/* Sidebar hamburger menu with flex layout */
+.hamburger-menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: fixed;
+  top: var(--navbar-height);
+  left: 0;
+  width: 240px;
+  height: calc(100vh - var(--navbar-height));
+  background-color: #fff;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+  border-radius: 0 0 8px 0;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  z-index: 9999;
+}
+
+.menu-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  color: #111;
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+  border-left: 4px solid transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  text-decoration: none;
+}
+
+.menu-item svg {
+  flex-shrink: 0;
+  color: #111;
+}
+
+.menu-item:hover {
+  background-color: #f3f3f3;
+  text-decoration: none;
+}
+
+.menu-item[aria-current="page"] {
+  background-color: #e5e5e5;
+  border-left-color: var(--primary-color);
+  font-weight: 600;
+}
+
+.logout-container {
+  padding: 0 20px;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  padding: 12px 20px;
+  color: var(--error-color);
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logout-btn:hover {
+  background-color: #fce4e4;
+  color: #b71c1c;
 }

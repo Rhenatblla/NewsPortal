@@ -1,39 +1,118 @@
 .comments-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-large);
-  }
-  
-  .comments-empty {
-    text-align: center;
-    padding: var(--spacing-large);
-    color: var(--text-secondary);
-  }
-  
-  .comment-item {
-    background-color: var(--background-color);
-    border-radius: var(--border-radius-medium);
-    padding: var(--spacing-medium);
-  }
-  
-  .comment-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: var(--spacing-small);
-  }
-  
-  .comment-author {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-small);
-  }
-  
-  .comment-date {
-    font-size: var(--font-size-small);
-    color: var(--text-secondary);
-  }
-  
-  .comment-content {
-    color: var(--text-color);
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.comment-item {
+  background-color: #f9fafd;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.05);
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.comment-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.author-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.author-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.comment-date {
+  font-size: 12px;
+  color: #888;
+}
+
+.comment-content p {
+  margin: 0;
+  color: #222;
+  white-space: pre-wrap;
+}
+
+.edit-textarea {
+  width: 100%;
+  font-size: 14px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  margin-bottom: 8px;
+}
+
+.edit-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-save,
+.btn-cancel,
+.btn-edit,
+.btn-delete {
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  padding: 6px 14px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-save {
+  background-color: #1976d2;
+  color: white;
+}
+
+.btn-save:hover {
+  background-color: #115293;
+}
+
+.btn-cancel {
+  background-color: #757575;
+  color: white;
+}
+
+.btn-cancel:hover {
+  background-color: #545454;
+}
+
+.comment-actions {
+  display: flex;
+  justify-content: flex-end; /* Rata kanan */
+  gap: 10px; /* Jarak antar tombol */
+  margin-top: 8px;
+}
+
+.btn-edit {
+  background-color: #e0f0ff;
+  color: #007acc;
+}
+
+.btn-edit:hover {
+  background-color: #b3d8ff;
+}
+
+.btn-delete {
+  background-color: #ffe0e0;
+  color: #d32f2f;
+}
+
+.btn-delete:hover {
+  background-color: #ffb3b3;
+}

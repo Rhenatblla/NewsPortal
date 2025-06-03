@@ -4,6 +4,7 @@ import { AppProviders } from './AppProviders';
 import '../assets/styles/index.css';
 
 
+
 const App = () => {
   return (
     <AppProviders>

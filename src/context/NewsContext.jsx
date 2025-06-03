@@ -1,12 +1,14 @@
-import React, { createContext, useState, useEffect, useCallback, useMemo } from 'react';
-import { 
-  fetchNews, 
-  fetchNewsById, 
+import React, { createContext, useState, useCallback, useMemo } from 'react';
+import {
+  fetchNews,
+  fetchNewsById,
   searchNews,
-  addNews, 
-  deleteNews, 
+  addNews,
+  deleteNews,
   addComment,
-  updateNews 
+  updateNews,
+  updateComment,
+  deleteComment
 } from '../features/news/services/newsService';
 
 export const NewsContext = createContext();
@@ -30,10 +32,6 @@ export const NewsProvider = ({ children }) => {
     }
   }, []);
 
-  useEffect(() => {
-    loadNews();
-  }, [loadNews]);
-
   const getNewsById = useCallback(async (id) => {
     setLoading(true);
     setError(null);
@@ -48,26 +46,6 @@ export const NewsProvider = ({ children }) => {
       setLoading(false);
     }
   }, []);
-
-  const handleUpdateNews = useCallback(async (id, data) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const updatedNews = await updateNews(id, data);
-      setNews(prevNews => prevNews.map(item => 
-        item.id === id ? updatedNews : item
-      ));
-      if (currentNews && currentNews.id === id) {
-        setCurrentNews(updatedNews);
-      }
-      return updatedNews;
-    } catch (err) {
-      setError(err.message || 'Failed to update news');
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, [currentNews]);
 
   const handleSearchNews = useCallback(async (query) => {
     setLoading(true);
@@ -130,6 +108,60 @@ export const NewsProvider = ({ children }) => {
     }
   }, [currentNews]);
 
+  const handleUpdateNews = useCallback(async (id, data) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const updatedNews = await updateNews(id, data);
+      setNews(prevNews => prevNews.map(item => item.id === id ? updatedNews : item));
+      if (currentNews && currentNews.id === id) {
+        setCurrentNews(updatedNews);
+      }
+      return updatedNews;
+    } catch (err) {
+      setError(err.message || 'Failed to update news');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, [currentNews]);
+
+  // Tambahkan updateComment dan deleteComment
+  const handleUpdateComment = useCallback(async (newsId, commentId, newContent) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const updatedNews = await updateComment(newsId, commentId, newContent);
+      if (currentNews && currentNews.id === newsId) {
+        setCurrentNews(updatedNews);
+      }
+      setNews(prevNews => prevNews.map(item => item.id === newsId ? updatedNews : item));
+      return updatedNews;
+    } catch (err) {
+      setError(err.message || 'Failed to update comment');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, [currentNews]);
+
+  const handleDeleteComment = useCallback(async (newsId, commentId) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const updatedNews = await deleteComment(newsId, commentId);
+      if (currentNews && currentNews.id === newsId) {
+        setCurrentNews(updatedNews);
+      }
+      setNews(prevNews => prevNews.map(item => item.id === newsId ? updatedNews : item));
+    } catch (err) {
+      setError(err.message || 'Failed to delete comment');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, [currentNews]);
+
   const contextValue = useMemo(() => ({
     news,
     currentNews,
@@ -141,19 +173,23 @@ export const NewsProvider = ({ children }) => {
     addNews: handleAddNews,
     deleteNews: handleDeleteNews,
     addComment: handleAddComment,
-    updateNews: handleUpdateNews
+    updateNews: handleUpdateNews,
+    updateComment: handleUpdateComment,
+    deleteComment: handleDeleteComment
   }), [
-    news, 
-    currentNews, 
-    loading, 
-    error, 
-    loadNews, 
-    getNewsById, 
-    handleSearchNews, 
-    handleAddNews, 
-    handleDeleteNews, 
+    news,
+    currentNews,
+    loading,
+    error,
+    loadNews,
+    getNewsById,
+    handleSearchNews,
+    handleAddNews,
+    handleDeleteNews,
     handleAddComment,
-    handleUpdateNews
+    handleUpdateNews,
+    handleUpdateComment,
+    handleDeleteComment
   ]);
 
   return (
