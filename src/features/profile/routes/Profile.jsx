@@ -1,6 +1,6 @@
-import React from 'react';
-import ProfileForm from '../components/ProfileForm';
-import './Profile.css';
+import React from "react";
+import ProfileForm from "../components/ProfileForm";
+import "./Profile.css";
 
 const Profile = () => {
   return (
