@@ -1,38 +1,82 @@
 .comment-form-container {
-    margin-bottom: var(--spacing-large);
-  }
-  
-  .comment-form {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-medium);
-  }
-  
-  .comment-input-group {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-small);
-    flex: 1;
-    background-color: var(--background-color);
-    border-radius: var(--border-radius-medium);
-    padding: var(--spacing-xxsmall) var(--spacing-small);
-  }
-  
-  .comment-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-  
-  .comment-input {
-    flex: 1;
-    border: none;
-    background: none;
-    padding: var(--spacing-small);
-    font-size: var(--font-size-medium);
-  }
-  
-  .comment-input:focus {
-    outline: none;
-  }
+  margin-bottom: var(--spacing-large);
+}
+
+.comment-form {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+}
+
+.comment-input-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  flex: 1;
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-xxsmall) var(--spacing-small);
+}
+
+.comment-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.comment-input {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: var(--spacing-small);
+  font-size: var(--font-size-medium);
+}
+
+.comment-input:focus {
+  outline: none;
+}
+
+.mention-suggestions {
+  background: #fff;
+  border: 1px solid #ccc;
+  margin-top: 4px;
+  position: absolute;
+  z-index: 10;
+  list-style: none;
+  padding: 0;
+  width: 200px;
+  max-height: 150px;
+  overflow-y: auto;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.mention-suggestions li {
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.mention-suggestions li:hover {
+  background-color: #f0f0f0;
+}
+
+.emoji-picker-container {
+  position: absolute;
+  z-index: 100;
+  margin-top: 8px;
+}
+
+.comment-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.emoji-button {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}

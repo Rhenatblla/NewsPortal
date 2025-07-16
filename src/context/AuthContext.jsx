@@ -1,8 +1,9 @@
-// src/context/AuthContext.jsx
-import React, { createContext, useState, useEffect, useCallback, useMemo } from 'react';
-import { auth } from '../firebase/firebaseConfig';
-import { login, register, logout, signInWithGoogle } from '../features/auth/services/authService';
-import { onAuthStateChanged } from 'firebase/auth';
+import React, { createContext, useState, useEffect, useCallback, useMemo } from "react";
+import { auth } from "../firebase/firebaseConfig";
+import { login, register, logout, signInWithGoogle } from "../features/auth/services/authService";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase/firebaseConfig";
 
 export const AuthContext = createContext();
 
@@ -12,19 +13,38 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        setUser({
-          uid: firebaseUser.uid,
-          email: firebaseUser.email,
-          name: firebaseUser.displayName,
-          profilePicture: firebaseUser.photoURL || null,
-        });
+        try {
+          const userRef = doc(db, "users", firebaseUser.uid);
+          const userSnap = await getDoc(userRef);
+          const userData = userSnap.exists() ? userSnap.data() : {};
+
+          const finalUser = {
+            uid: firebaseUser.uid,
+            email: firebaseUser.email,
+            name: userData.name || firebaseUser.displayName || "",
+            profilePicture: userData.profilePicture || firebaseUser.photoURL || null,
+            about: userData.about || "",
+            role: userData.role || "user",
+          };
+
+          setUser(finalUser);
+
+          // 🚀 Auto redirect jika admin
+          if (finalUser.role === "admin" && window.location.pathname === "/login") {
+            window.location.href = "/admin-dashboard";
+          }
+        } catch (err) {
+          console.error("Error fetching user profile:", err);
+          setUser(null);
+        }
       } else {
         setUser(null);
       }
       setLoading(false);
     });
+
     return () => unsubscribe();
   }, []);
 
@@ -36,7 +56,7 @@ export const AuthProvider = ({ children }) => {
       setUser(userData);
       return userData;
     } catch (err) {
-      setError(err.message || 'Login failed');
+      setError(err.message || "Login failed");
       throw err;
     } finally {
       setLoading(false);
@@ -51,7 +71,7 @@ export const AuthProvider = ({ children }) => {
       setUser(userData);
       return userData;
     } catch (err) {
-      setError(err.message || 'Registration failed');
+      setError(err.message || "Registration failed");
       throw err;
     } finally {
       setLoading(false);
@@ -65,7 +85,7 @@ export const AuthProvider = ({ children }) => {
       await logout();
       setUser(null);
     } catch (err) {
-      setError(err.message || 'Logout failed');
+      setError(err.message || "Logout failed");
     } finally {
       setLoading(false);
     }
@@ -79,27 +99,26 @@ export const AuthProvider = ({ children }) => {
       setUser(userData);
       return userData;
     } catch (err) {
-      setError(err.message || 'Google sign-in failed');
+      setError(err.message || "Google sign-in failed");
       throw err;
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const contextValue = useMemo(() => ({
-    user,
-    loading,
-    error,
-    login: handleLogin,
-    register: handleRegister,
-    logout: handleLogout,
-    signInWithGoogle: handleGoogleLogin,
-    setUser,
-  }), [user, loading, error, handleLogin, handleRegister, handleLogout, handleGoogleLogin]);
-
-  return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
+  const contextValue = useMemo(
+    () => ({
+      user,
+      loading,
+      error,
+      login: handleLogin,
+      register: handleRegister,
+      logout: handleLogout,
+      signInWithGoogle: handleGoogleLogin,
+      setUser,
+    }),
+    [user, loading, error, handleLogin, handleRegister, handleLogout, handleGoogleLogin]
   );
+
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 };

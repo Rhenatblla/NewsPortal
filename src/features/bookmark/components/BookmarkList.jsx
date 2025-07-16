@@ -1,3 +1,4 @@
+// BookmarkList.jsx
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/hooks/useAuth';
 import NewsListItem from '../../news/components/NewsListItem';
@@ -11,13 +12,9 @@ const BookmarkList = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchBookmarks = async () => {
-      if (!user) {
-        setBookmarks([]);
-        setLoading(false);
-        return;
-      }
+    if (!user || !user.uid) return;
 
+    const fetchBookmarks = async () => {
       setLoading(true);
       setError(null);
 
@@ -53,18 +50,18 @@ const BookmarkList = () => {
   };
 
   if (loading) {
-    return <div className="loading-indicator">Loading bookmarks...</div>;
+    return <div className="loading-indicator">📦 Loading bookmarks...</div>;
   }
 
   if (error) {
     return (
       <div className="error-message">
-        <p>Error: {error}</p>
-        <button 
-          onClick={() => getBookmarks(user.uid).then(setBookmarks)} 
+        <p>❌ Error: {error}</p>
+        <button
+          onClick={() => user && getBookmarks(user.uid).then(setBookmarks)}
           className="reload-btn"
         >
-          Try Again
+          🔄 Coba Lagi
         </button>
       </div>
     );
@@ -73,7 +70,7 @@ const BookmarkList = () => {
   if (bookmarks.length === 0) {
     return (
       <div className="empty-bookmarks">
-        <p>You don't have any bookmarks yet.</p>
+        <p>📭 Kamu belum punya bookmark apapun~</p>
       </div>
     );
   }
@@ -82,33 +79,25 @@ const BookmarkList = () => {
     <div className="bookmarks-list">
       {bookmarks.map(bookmark => (
         <div key={bookmark.id} className="bookmark-item">
-          <NewsListItem news={{
-            id: bookmark.newsId,
-            title: bookmark.newsTitle,
-            image: bookmark.newsImage,
-            author: bookmark.author,
-            content: bookmark.content,
-            comments: bookmark.comments,
-            likes: bookmark.likes,
-            createdAt: bookmark.createdAt,
-          }} />
+          <NewsListItem
+            news={{
+              id: bookmark.newsId,
+              title: bookmark.newsTitle,
+              image: bookmark.newsImage,
+              author: bookmark.author,
+              content: bookmark.content,
+              comments: bookmark.comments,
+              likes: bookmark.likes,
+              createdAt: bookmark.createdAt,
+            }}
+          />
           <button
-            className="action-btn remove remove-bookmark-btn"
+            className="remove-bookmark-btn fun"
             onClick={() => handleRemoveBookmark(bookmark.id)}
             aria-label="Remove bookmark"
-            title="Remove bookmark"
+            title="Klik untuk hapus bookmark ini 😢"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
+            <span role="img" aria-label="broken-heart">💔</span> Bye Bookmark!
           </button>
         </div>
       ))}

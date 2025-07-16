@@ -1,65 +1,101 @@
 // src/features/auth/services/authService.js
-import { auth } from '../../../firebase/firebaseConfig';
 import {
-  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   signOut,
-  updateProfile,
   GoogleAuthProvider,
   signInWithPopup,
 } from 'firebase/auth';
 
-// Register dengan email/password
-export const register = async (name, email, password) => {
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    await updateProfile(userCredential.user, { displayName: name });
-    return {
-      uid: userCredential.user.uid,
-      email: userCredential.user.email,
-      name: userCredential.user.displayName,
-      profilePicture: userCredential.user.photoURL || null,
-    };
-  } catch (error) {
-    throw new Error(error.message);
-  }
-};
+import { auth } from '../../../firebase/firebaseConfig';
+import { db } from '../../../firebase/firebaseConfig';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 
-// Login dengan email/password
+// 🔐 Fungsi login
 export const login = async (email, password) => {
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-    return {
-      uid: user.uid,
+  const userCredential = await signInWithEmailAndPassword(auth, email, password);
+  const user = userCredential.user;
+
+  // Ambil data user dari Firestore
+  const userRef = doc(db, 'users', user.uid);
+  const userSnap = await getDoc(userRef);
+
+  if (!userSnap.exists()) {
+    // Jika belum ada, buat user baru di Firestore (optional)
+    await setDoc(userRef, {
       email: user.email,
-      name: user.displayName,
+      name: user.displayName || '',
       profilePicture: user.photoURL || null,
-    };
-  } catch (error) {
-    throw new Error(error.message);
+      about: '',
+      role: email.toLowerCase() === 'admin@gmail.com' ? 'admin' : 'user', // ✅ auto assign role
+    });
   }
+
+  return {
+    uid: user.uid,
+    email: user.email,
+    name: userSnap.data()?.name || user.displayName || '',
+    profilePicture: userSnap.data()?.profilePicture || user.photoURL || null,
+    about: userSnap.data()?.about || '',
+    role: userSnap.data()?.role || (email.toLowerCase() === 'admin@gmail.com' ? 'admin' : 'user'),
+  };
 };
 
-// Login dengan Google
-export const signInWithGoogle = async () => {
-  try {
-    const provider = new GoogleAuthProvider();
-    const userCredential = await signInWithPopup(auth, provider);
-    const user = userCredential.user;
-    return {
-      uid: user.uid,
-      email: user.email,
-      name: user.displayName,
-      profilePicture: user.photoURL || null,
-    };
-  } catch (error) {
-    throw new Error(error.message);
-  }
+// 🔐 Fungsi register
+export const register = async (name, email, password) => {
+  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+  const user = userCredential.user;
+
+  // Tambahkan user ke Firestore
+  const userRef = doc(db, 'users', user.uid);
+  await setDoc(userRef, {
+    name,
+    email,
+    profilePicture: user.photoURL || null,
+    about: '',
+    role: email.toLowerCase() === 'admin@gmail.com' ? 'admin' : 'user',
+  });
+
+  return {
+    uid: user.uid,
+    email: user.email,
+    name,
+    profilePicture: user.photoURL || null,
+    about: '',
+    role: email.toLowerCase() === 'admin@gmail.com' ? 'admin' : 'user',
+  };
 };
 
-// Logout
+// 🔓 Logout
 export const logout = async () => {
   await signOut(auth);
-  return true;
+};
+
+// 🔐 Google Sign In
+export const signInWithGoogle = async () => {
+  const provider = new GoogleAuthProvider();
+  const userCredential = await signInWithPopup(auth, provider);
+  const user = userCredential.user;
+
+  const userRef = doc(db, 'users', user.uid);
+  const userSnap = await getDoc(userRef);
+
+  if (!userSnap.exists()) {
+    await setDoc(userRef, {
+      name: user.displayName || '',
+      email: user.email,
+      profilePicture: user.photoURL || null,
+      about: '',
+      role: user.email.toLowerCase() === 'admin@gmail.com' ? 'admin' : 'user',
+    });
+  }
+
+  return {
+    uid: user.uid,
+    email: user.email,
+    name: user.displayName || '',
+    profilePicture: user.photoURL || null,
+    about: '',
+    role: user.email.toLowerCase() === 'admin@gmail.com' ? 'admin' : 'user',
+  };
 };

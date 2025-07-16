@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSearch } from '../../../context/SearchContext';
 import './SearchBar.css';
 
 const SearchBar = () => {
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
+  const { setSearchQuery } = useSearch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (query.trim()) {
-      navigate(`/search?q=${encodeURIComponent(query.trim())}`);
-    }
+
+    const trimmed = query.trim();
+    if (!trimmed) return; // ⛔ Jangan navigate kalau kosong
+
+    setSearchQuery(trimmed);
+    navigate(`/search?q=${encodeURIComponent(trimmed)}`);
   };
 
   return (
@@ -22,9 +27,6 @@ const SearchBar = () => {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
-      <button type="submit" className="search-button">
-        <i className="search-icon"></i>
-      </button>
     </form>
   );
 };

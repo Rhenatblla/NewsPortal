@@ -1,79 +1,49 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useSearch } from '../../../context/SearchContext';
 import { useNews } from '../hooks/useNews';
 import NewsListItem from '../components/NewsListItem';
-import './SearchResults.css';
 
 const SearchResults = () => {
-  const location = useLocation();
-  const { searchNews } = useNews();
-  const [results, setResults] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  
-  // Get search query from URL
-  const query = new URLSearchParams(location.search).get('q') || '';
-  
+  const { searchQuery } = useSearch(); // Ambil query dari context
+  const { news, loadNews } = useNews(); // Gunakan hook news
+  const [allNews, setAllNews] = useState([]);
+
   useEffect(() => {
-    const performSearch = async () => {
-      if (!query) {
-        setResults([]);
-        return;
-      }
-      
-      setLoading(true);
-      setError(null);
-      
-      try {
-        const searchResults = await searchNews(query);
-        setResults(searchResults);
-      } catch (err) {
-        setError(err.message || 'Search failed');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    performSearch();
-  }, [query, searchNews]);
-  
-  // Render items dengan useCallback untuk stabilitas
-  const renderResults = useCallback(() => {
-    return results.map(item => (
-      <NewsListItem key={item.id} news={item} />
-    ));
-  }, [results]);
-  
+    // Load semua news saat komponen mount
+    loadNews();
+  }, [loadNews]);
+
+  useEffect(() => {
+    // Update allNews ketika news berubah
+    if (news && Array.isArray(news)) {
+      setAllNews(news);
+    }
+  }, [news]);
+
+  // Filter berdasarkan query dari SearchContext
+  const filteredResults = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return allNews;
+
+    return allNews.filter((newsItem) => {
+      const searchableText = [
+        newsItem.title || '',
+        newsItem.content || '',
+        newsItem.description || '',
+      ].join(' ').toLowerCase();
+      return searchableText.includes(query);
+    });
+  }, [allNews, searchQuery]);
+
   return (
-    <div className="search-results">
-      <h1 className="search-title">
-        Search Results for: <span className="search-query">"{query}"</span>
-      </h1>
-      
-      {loading && <div className="loading-indicator">Searching...</div>}
-      
-      {error && (
-        <div className="error-message">
-          <p>Error: {error}</p>
-        </div>
+    <div className="search-results-container" style={{ padding: '2rem' }}>
+      {filteredResults.length > 0 ? (
+        filteredResults.map((item) => (
+          <NewsListItem key={item.id} news={item} />
+        ))
+      ) : (
+        <p>Tidak ada hasil ditemukan untuk "{searchQuery}"</p>
       )}
-      
-      {!loading && !error && results.length === 0 && (
-        <div className="empty-results">
-          <p>No results found for "{query}".</p>
-        </div>
-      )}
-      
-      <div className="results-count">
-        {!loading && !error && results.length > 0 && (
-          <p>Found {results.length} result{results.length !== 1 ? 's' : ''}</p>
-        )}
-      </div>
-      
-      <div className="news-list">
-        {!loading && renderResults()}
-      </div>
     </div>
   );
 };

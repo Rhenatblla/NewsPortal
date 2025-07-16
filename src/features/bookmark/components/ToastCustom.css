@@ -1,0 +1,33 @@
+/* Toast animation and styling */
+@keyframes toast-in {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
+
+@keyframes toast-out {
+  from {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+}
+
+.custom-toast {
+  font-weight: 600;
+  font-size: 16px;
+  color: #fff;
+  background-color: #222;
+  padding: 12px 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  animation: toast-in 0.5s ease, toast-out 0.5s ease 2s forwards;
+}

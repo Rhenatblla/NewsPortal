@@ -1,118 +1,110 @@
-.comments-list {
+.comment-section {
+  max-width: 680px;
+  margin-left: 20px;
+  font-family: "Helvetica Neue", sans-serif;
+}
+
+.comment-block {
+  margin-bottom: 20px;
+}
+
+.comment-row {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  align-items: flex-start;
+  gap: 14px;
 }
 
-.comment-item {
-  background-color: #f9fafd;
-  padding: 16px;
-  border-radius: 8px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.05);
-}
-
-.comment-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.comment-author {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.author-avatar {
-  width: 36px;
-  height: 36px;
+.comment-avatar {
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   object-fit: cover;
 }
 
-.author-name {
-  font-weight: 600;
-  color: #333;
+.comment-content {
+  flex: 1;
 }
 
-.comment-date {
-  font-size: 12px;
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #555;
+}
+
+.comment-time {
+  font-size: 13px;
   color: #888;
 }
 
-.comment-content p {
-  margin: 0;
-  color: #222;
-  white-space: pre-wrap;
+.comment-text {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #333;
+  margin: 8px 0;
 }
 
-.edit-textarea {
-  width: 100%;
-  font-size: 14px;
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  resize: vertical;
-  margin-bottom: 8px;
-}
-
-.edit-buttons {
+.comment-footer {
   display: flex;
-  gap: 8px;
+  gap: 12px;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 10px;
 }
 
-.btn-save,
-.btn-cancel,
-.btn-edit,
-.btn-delete {
-  cursor: pointer;
+.comment-footer button {
+  background: none;
   border: none;
-  border-radius: 4px;
+  cursor: pointer;
+  padding: 0;
+  color: #555;
+}
+
+.comment-edit {
+  width: 100%;
+  padding: 6px;
   font-size: 14px;
-  padding: 6px 14px;
-  transition: background-color 0.3s ease;
-}
-
-.btn-save {
-  background-color: #1976d2;
-  color: white;
-}
-
-.btn-save:hover {
-  background-color: #115293;
-}
-
-.btn-cancel {
-  background-color: #757575;
-  color: white;
-}
-
-.btn-cancel:hover {
-  background-color: #545454;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 .comment-actions {
   display: flex;
-  justify-content: flex-end; /* Rata kanan */
-  gap: 10px; /* Jarak antar tombol */
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.reply-box {
+  margin-top: 12px;
+}
+
+.reply-box textarea {
+  width: 100%;
+  font-size: 14px;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.reply-box button {
+  margin-top: 6px;
+  padding: 6px 10px;
+  background-color: #222;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.replies {
+  margin-left: 48px;
   margin-top: 8px;
 }
 
-.btn-edit {
-  background-color: #e0f0ff;
-  color: #007acc;
-}
-
-.btn-edit:hover {
-  background-color: #b3d8ff;
-}
-
-.btn-delete {
-  background-color: #ffe0e0;
-  color: #d32f2f;
-}
-
-.btn-delete:hover {
-  background-color: #ffb3b3;
+.comment-divider {
+  border: none;
+  border-bottom: 1px solid #eee;
+  margin: 18px 0;
 }

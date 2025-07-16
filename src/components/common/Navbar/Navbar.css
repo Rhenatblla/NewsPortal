@@ -17,7 +17,7 @@
   left: 0;
   right: 0;
   height: var(--navbar-height);
-  background-color: #8dd1e0;
+  background-color: #647DA3;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
@@ -36,13 +36,13 @@
 .navbar-brand {
   font-size: 1.25rem;
   font-weight: bold;
-  color: #111;
+  color: #ffffff;
   text-decoration: none;
 }
-a.navbar-brand{
+a.navbar-brand {
   text-decoration: none;
 }
-a.navbar-brand:hover{
+a.navbar-brand:hover {
   color: #007acc;
 }
 .navbar-center {
@@ -177,22 +177,6 @@ a.navbar-brand:hover{
 }
 
 /* Sidebar hamburger menu with flex layout */
-.hamburger-menu {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: fixed;
-  top: var(--navbar-height);
-  left: 0;
-  width: 240px;
-  height: calc(100vh - var(--navbar-height));
-  background-color: #fff;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
-  border-radius: 0 0 8px 0;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  z-index: 9999;
-}
 
 .menu-list {
   list-style: none;
@@ -253,4 +237,114 @@ a.navbar-brand:hover{
 .logout-btn:hover {
   background-color: #fce4e4;
   color: #b71c1c;
+}
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 90;
+}
+
+.sidebar {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1001;
+}
+
+.sidebar-close {
+  background: #fff;
+  border: none;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease;
+}
+
+.sidebar-close:hover {
+  background-color: #f0f0f0;
+}
+
+.hamburger-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100%;
+  background-color: white;
+  z-index: 100;
+  padding: 24px 16px;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.menu-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.menu-close-btn {
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 var(--spacing-medium);
+  }
+
+  .navbar-center {
+    flex: 1;
+    padding: 0 8px;
+    min-width: 0;
+  }
+  .navbar-right {
+    gap: var(--spacing-small);
+  }
+
+  .user-name {
+    display: none; /* supaya nggak kepanjangan dan tabrakan di layar kecil */
+  }
+  .btn-register {
+    padding: 4px 10px;
+    font-size: 0.875rem;
+  }
+
+  .btn-add {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+
+  .user-name {
+    display: none; /* Nama user disembunyikan agar tidak terlalu panjang */
+  }
+
+  .dropdown-toggle {
+    gap: 4px;
+    padding: 4px;
+  }
+
+  .menu-item {
+    padding: 10px 16px;
+    font-size: 0.95rem;
+  }
+
+  .hamburger-menu {
+    width: 85%;
+  }
+
+  .dropdown-menu {
+    width: 100%;
+    right: 0;
+  }
 }

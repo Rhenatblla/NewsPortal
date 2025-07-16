@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../features/auth/hooks/useAuth';
+// import { articles } from '../features/admin/Dummydata';
 
 // Layouts
 import MainLayout from '../components/layout/MainLayout';
@@ -18,6 +19,7 @@ import Profile from '../features/profile/routes/Profile';
 import BookmarkPage from '../features/bookmark/routes/BookmarkPage';
 import MyWorksPage from '../features/myworks/routes/MyWorksPage';
 import EditNewsForm from '../features/news/components/EditNewsForm';
+import AdminDashboard from '../features/admin/AdminDashboard';
 
 // Di dalam <Routes>:
 <Route path="/edit-news/:id" element={<EditNewsForm />} />
@@ -75,6 +77,9 @@ export const Router = () => {
       
       {/* Fallback route */}
       <Route path="*" element={<Navigate to="/" replace />} />
+
+      <Route path="/admin-dashboard" element={<AdminDashboard />} />
+
     </Routes>
   );
 };

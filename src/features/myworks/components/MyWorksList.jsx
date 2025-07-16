@@ -1,9 +1,8 @@
-// src/features/myworks/components/MyWorksList.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../auth/hooks/useAuth';
 import NewsListItem from '../../news/components/NewsListItem';
-import { getUserNews, deleteUserNews, updateUserNews } from '../services/MyWorksService'; // updateUserNews diimport
+import { getUserNews, deleteUserNews } from '../services/MyWorksService';
 import Button from '../../../components/common/Button/Button';
 import './MyWorksList.css';
 
@@ -38,23 +37,11 @@ const MyWorksList = () => {
     fetchUserNews();
   }, [fetchUserNews]);
 
-  const handleUpdate = async (id, data) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const updated = await updateUserNews(id, data);  // Panggil updateUserNews
-      setUserNews(prev =>
-        prev.map(item => (item.id === id ? updated : item))
-      );
-    } catch (err) {
-      setError(err.message || 'Failed to update news');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this news? This action cannot be undone.')) {
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
@@ -77,7 +64,12 @@ const MyWorksList = () => {
   };
 
   if (loading) {
-    return <div className="loading-indicator">Loading your news...</div>;
+    return (
+      <div className="loading-indicator">
+        <div className="loading-spinner"></div>
+        <span>Loading your news...</span>
+      </div>
+    );
   }
 
   if (error) {
@@ -94,6 +86,8 @@ const MyWorksList = () => {
   if (userNews.length === 0) {
     return (
       <div className="empty-works">
+        <div className="empty-icon">📰</div>
+        <h3>No news articles yet</h3>
         <p>You haven't created any news yet.</p>
         <Link to="/add-news" className="btn-add-news">
           <Button variant="primary">Create Your First News</Button>
@@ -103,40 +97,96 @@ const MyWorksList = () => {
   }
 
   return (
-    <div className="my-works-list">
-      <div className="my-works-header">
-        <h2>Your Published News</h2>
-        <Link to="/add-news" className="btn-add-news">
-          <Button variant="primary" size="small">Add News</Button>
-        </Link>
-      </div>
-
-      <div className="works-list">
-        {userNews.map(news => (
-          <div key={news.id} className="work-item">
-            <div className="work-meta">
-              <span className="work-date">Last Updated on {formatDate(news.updatedAt)}</span>
-              <Button
-                variant="secondary"
-                size="small"
-                onClick={() => handleUpdate(news.id, { title: news.title + ' (Updated)' })}
-                style={{ marginLeft: 8 }}
-              >
-                Update Title
-              </Button>
-              <Button
-                variant="danger"
-                size="small"
-                onClick={() => handleDelete(news.id)}
-                style={{ marginLeft: 8 }}
-              >
-                Delete
-              </Button>
-            </div>
-
-            <NewsListItem news={news} />
+    <div className="my-works-container">
+      <div className="my-works-list">
+        <div className="my-works-header">
+          <div className="header-content">
+            <h2>Your Published News</h2>
+            <p className="header-subtitle">
+              Manage and edit your published articles
+            </p>
           </div>
-        ))}
+          <Link to="/add-news" className="btn-add-news">
+            <Button variant="primary" size="small">
+              <span className="btn-icon">+</span>
+              Add News
+            </Button>
+          </Link>
+        </div>
+
+        <div className="works-stats">
+          <div className="stat-item">
+            <span className="stat-number">{userNews.length}</span>
+            <span className="stat-label">Total Articles</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-number">
+              {userNews.filter(news =>
+                new Date(news.publishedAt) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+              ).length}
+            </span>
+            <span className="stat-label">Last 30 Days</span>
+          </div>
+        </div>
+
+        <div className="works-list">
+          {userNews.map(news => (
+            <div key={news.id} className="work-item">
+              <div className="work-meta">
+                <div className="meta-info">
+                  <span className="work-status">
+                    <span className="status-dot published"></span>
+                    Published
+                  </span>
+                  <span className="work-date">
+                    Last Updated: {formatDate(news.updatedAt)}
+                  </span>
+                </div>
+                <div className="work-actions">
+                  <Link to={`/edit-news/${news.id}`}>
+                    <Button variant="secondary" size="small">
+                      <span className="btn-icon">✏️</span>
+                      Edit
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="danger"
+                    size="small"
+                    onClick={() => handleDelete(news.id)}
+                  >
+                    <span className="btn-icon">🗑️</span>
+                    Delete
+                  </Button>
+                </div>
+              </div>
+
+              <div className="work-content">
+                <NewsListItem news={news} />
+
+                <div className="work-footer">
+                  <div className="work-tags">
+                    {news.tags && news.tags.map(tag => (
+                      <span key={tag} className="work-tag">
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="work-views">
+                    <span className="views-count">
+                      👁️ {news.views || 0} views
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="works-pagination">
+          <p className="pagination-info">
+            Showing {userNews.length} of {userNews.length} articles
+          </p>
+        </div>
       </div>
     </div>
   );

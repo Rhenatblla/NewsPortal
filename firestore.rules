@@ -1,0 +1,72 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // === Fungsi bantu admin ===
+    function isAdmin() {
+      return request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+    }
+
+    // === USERS ===
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // === NEWS ===
+    match /news/{newsId} {
+      allow read: if true;
+
+      allow update, delete: if request.auth != null &&
+        (isAdmin() ||
+         resource.data.authorId == request.auth.uid || 
+         resource.data.author.id == request.auth.uid);
+
+      allow create: if request.auth != null &&
+        (request.resource.data.authorId == request.auth.uid ||
+         request.resource.data.author.id == request.auth.uid);
+
+      // Khusus update comment count
+      allow update: if request.auth != null &&
+        request.resource.data.keys().hasOnly(['commentsCount']) &&
+        (
+          request.resource.data.commentsCount == resource.data.commentsCount + 1 ||
+          request.resource.data.commentsCount == resource.data.commentsCount - 1
+        );
+    }
+
+    // === COMMENTS ===
+    match /comments/{commentId} {
+      // Semua pengguna bisa baca
+      allow read: if true;
+
+      // Komentar hanya bisa dibuat oleh user login, dan author.id harus cocok dengan UID
+      allow create: if request.auth != null &&
+        request.resource.data.author.id == request.auth.uid;
+
+      // Komentar hanya bisa dihapus/diupdate oleh author atau admin
+      allow update, delete: if request.auth != null &&
+        (
+          isAdmin() ||
+          resource.data.author.id == request.auth.uid
+        );
+    }
+
+    // === BOOKMARKS ===
+    match /bookmarks/{bookmarkId} {
+      allow read, write: if request.auth != null &&
+        request.auth.uid == resource.data.userId;
+    }
+
+    // Opsional fallback
+    match /bookmarks/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Default: block semua yang tidak terdefinisi
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

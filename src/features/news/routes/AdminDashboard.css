@@ -1,0 +1,46 @@
+.admin-dashboard {
+  padding: 32px;
+  background-color: #fefefe;
+  min-height: 100vh;
+}
+
+.admin-dashboard h1 {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.admin-description {
+  color: #555;
+  margin-bottom: 32px;
+}
+
+.admin-section {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.admin-news-list > * + * {
+  margin-top: 24px;
+}
+.admin-dashboard {
+  padding: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: 'Helvetica Neue', sans-serif;
+}
+
+.admin-dashboard h1 {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.admin-dashboard p {
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.admin-news-section {
+  margin-top: 24px;
+}

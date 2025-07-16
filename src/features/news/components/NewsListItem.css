@@ -191,3 +191,33 @@
 .bookmark-icon.active {
   color: #f39c12;
 }
+
+.news-item-wrapper {
+  position: relative;
+  padding: 16px;
+}
+
+.news-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+  z-index: 5;
+  position: relative;
+}
+
+.icon {
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.icon.active {
+  color: red;
+}
+
+.news-item-bookmark .bookmark-icon.active {
+  color: #6366f1; /* warna ungu atau biru sesuai tema kamu */
+}
+
+.news-item-likes .like-icon.active {
+  color: #f43f5e; /* warna merah hati */
+}

@@ -6,7 +6,6 @@ import './MyWorksPage.css';
 const MyWorksPage = () => {
   return (
     <div className="my-works-page">
-      <h1 className="page-title">My Works</h1>
       <MyWorksList />
     </div>
   );
